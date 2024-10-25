@@ -1,0 +1,20 @@
+# ls
+alias ls='ls --color=auto'
+alias ll='ls -l'
+
+# rm
+alias rm='rm -i'
+
+# tree
+alias tree='tree -C'
+
+# internet on ipv6
+alias ping6='ping -6'
+alias ip6='ip -6'
+alias tracepath6='tracepath -6'
+
+# grep
+alias grep='grep --color=auto'
+
+# man
+alias cman='LANG="zh_CN.UTF-8" LANGUAGE=zh_CN man'

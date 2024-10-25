@@ -1,0 +1,5 @@
+for sub_rc in "$XSH_DOTDIR"/rc.d/*.rc; do
+    if [[ -f "$sub_rc" ]]; then
+        . "$sub_rc"
+    fi
+done

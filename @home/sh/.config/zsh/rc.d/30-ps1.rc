@@ -1,0 +1,81 @@
+setopt PROMPT_SUBST
+
+__milliseconds_to_human() {
+	local milliseconds=$1
+	local d=$((milliseconds/1000/60/60/24))
+	local h=$((milliseconds/1000/60/60%24))
+	local m=$((milliseconds/100/60%60))
+	local s=$((milliseconds/1000%60))
+	local ms=$((milliseconds%1000))
+	if [[ $d -gt 0 ]]; then
+		echo -n "$d d"
+	elif [[ $h -gt 0 ]]; then
+		echo -n "$h h"
+	elif [[ $m -gt 0 ]]; then
+		echo -n "$m m"
+	elif [[ $s -gt 0 ]]; then
+		echo -n "$s s"
+	else
+		echo -n "$ms ms"
+	fi
+}
+_ps1_cmd_timer_preexec() {
+	CMD_START_MILLISECONDS=$(date +%s%3N)
+	export CMD_START_MILLISECONDS
+}
+_ps1_cmd_timer() {
+	if [[ -z "${CMD_START_MILLISECONDS}" ]]; then
+		local CMD_ELAPSED_MILLISECONDS=0
+	else
+	    local CMD_ELAPSED_MILLISECONDS=$(($(date +%s%3N) - CMD_START_MILLISECONDS))
+	fi
+	echo -n "$(__milliseconds_to_human "$CMD_ELAPSED_MILLISECONDS")"
+}
+
+# Disable virtualenv prompt
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+_ps1_python_env() {
+	if [[ -n "$VIRTUAL_ENV" ]]; then
+		echo -n "[ ($(realpath --relative-to="$(pwd)" "$VIRTUAL_ENV"))] "
+	else
+	    if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+		    echo -n "[ $CONDA_DEFAULT_ENV] "
+		fi
+	fi
+}
+
+_ps1_git_env() {
+    if ! command -v git &>/dev/null; then
+		return
+	fi
+
+	if git rev-parse --is-inside-work-tree &> /dev/null; then
+	    local COMMIT_DIFF
+        if COMMIT_DIFF=$(git rev-list --count --left-right HEAD...@{upstream} 2>/dev/null); then 
+			local COMMIT_AHEAD
+			local COMMIT_BEHIND
+            COMMIT_AHEAD=$(echo "$COMMIT_DIFF" | awk '{print $1}')
+			COMMIT_BEHIND=$(echo "$COMMIT_DIFF" | awk '{print $2}')
+			local COMMIT_CHANGES=""
+			if [[ $COMMIT_AHEAD -gt 0 ]]; then
+				COMMIT_CHANGES+=" ${COMMIT_AHEAD}"
+			fi
+			if [[ $COMMIT_BEHIND -gt 0 ]]; then
+				COMMIT_CHANGES+=" ${COMMIT_BEHIND}"
+			fi
+		fi
+		echo -n "[ $(git branch --show-current)$COMMIT_CHANGES] "
+	fi
+}
+
+if [[ ${preexec_functions[(I)_ps1_cmd_timer_preexec]} -eq 0 ]]; then
+  preexec_functions+=(_ps1_cmd_timer_preexec)
+fi
+
+NEWLINE=$'\n'
+PS1="%F{2}[%n%f@%F{13}%M%f %F{12}%~]%f "
+PS1+="%F{4}\$(_ps1_python_env)%f"
+PS1+="%F{3}\$(_ps1_git_env)%f"
+PS1+="%(?.%F{10}[got %?]%f.%F{9}[got %?]%f) %F{14}[took \$(_ps1_cmd_timer)]%f %F{6}[at \$(date +%H:%M:%S)]%f"
+PS1+="${NEWLINE}"
+PS1+="%(!.#.$) "

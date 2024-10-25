@@ -1,0 +1,2 @@
+# 禁用 multios 选项
+unsetopt multios

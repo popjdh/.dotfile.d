@@ -1,0 +1,2 @@
+# 在配置 EDITOR=vim/nvim 下, zsh 默认使用 Vim 键位, 此处指定为 Emacs 键位保持默认
+bindkey -e
