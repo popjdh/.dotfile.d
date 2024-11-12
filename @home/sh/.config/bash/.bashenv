@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 . "$XSH_DOTDIR"/.env
 
 if [[ -f "$BASH_DOTDIR"/.bashenv.local ]]; then

@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 export XSH_DOTDIR="$HOME"/.config/xsh
 export BASH_DOTDIR="$HOME"/.config/bash
 

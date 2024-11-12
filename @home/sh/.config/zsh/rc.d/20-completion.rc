@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 export ZSH_COMP_DIR="$XDG_CACHE_HOME"/zsh
 [[ -d "$ZSH_COMP_DIR" ]] || mkdir -p "$ZSH_COMP_DIR"
 zstyle ':completion:*' cache-path "$ZSH_COMP_DIR"/zcompcache

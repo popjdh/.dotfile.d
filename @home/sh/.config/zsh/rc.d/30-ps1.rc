@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 setopt PROMPT_SUBST
 
 __milliseconds_to_human() {

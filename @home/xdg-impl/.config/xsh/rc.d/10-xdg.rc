@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 if ( command -v nvidia-settings &>/dev/null ); then
     [[ ! -d "$XDG_CONFIG_HOME"/nvidia ]] && mkdir -p "$XDG_CONFIG_HOME"/nvidia
     alias nvidia-settings='nvidia-settings --config="$XDG_CONFIG_HOME"/nvidia/settings'

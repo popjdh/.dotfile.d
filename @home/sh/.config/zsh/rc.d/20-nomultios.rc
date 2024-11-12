@@ -1,2 +1,4 @@
+# shellcheck shell=bash
+
 # 禁用 multios 选项
 unsetopt multios

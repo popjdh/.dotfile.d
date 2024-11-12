@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 [[ $- != *i* ]] && return
 
 . "$XSH_DOTDIR"/.rc

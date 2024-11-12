@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 __ps1_c() {
 	echo -n "$(tput setaf "$1")"
 }

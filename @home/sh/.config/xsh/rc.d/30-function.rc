@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 # Trims leading and trailing whitespace from $2 and writes it to the variable name passed as $1
 trim() {
     local var=${1:?} text=${2:-}

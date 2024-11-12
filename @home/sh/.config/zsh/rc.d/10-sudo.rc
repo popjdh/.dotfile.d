@@ -1,1 +1,3 @@
+# shellcheck shell=bash
+
 [[ -f /usr/share/zsh/plugins/zsh-sudo/sudo.plugin.zsh ]] && source /usr/share/zsh/plugins/zsh-sudo/sudo.plugin.zsh
