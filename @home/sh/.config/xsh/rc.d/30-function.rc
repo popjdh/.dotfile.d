@@ -29,7 +29,10 @@ if ( command -v peco &>/dev/null ); then
     sshh() {
         grep -E "^Host " ~/.ssh/config | awk "{print \$2}" | peco
     }
-    sshph() {
+    sshi() {
+        ssh "$(sshh)"
+    }
+    sshpi() {
         ssh -CqTNn -D 0.0.0.0:1080 "$(sshh)"
     }
 fi
