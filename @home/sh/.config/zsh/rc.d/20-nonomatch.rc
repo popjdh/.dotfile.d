@@ -1,0 +1,4 @@
+# shellcheck shell=bash
+
+# 禁用 nomatch 选项
+unsetopt nomatch
