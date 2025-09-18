@@ -1,0 +1,67 @@
+# shellcheck shell=bash
+
+if (command -v cjxl &>/dev/null); then
+    to_jxl() {
+        # Argument Check
+        if [[ "$#" -eq 0 ]]; then
+            echo "Usage: to_jxl <file1> [<file2> ...]" >&2
+            return 1
+        fi
+
+        local src_file
+        for src_file in "$@"; do
+            # Skip lnk files
+            if [[ -L "$src_file" ]]; then
+                continue
+            fi
+
+            local src_dir
+            src_dir=$(dirname "$src_file")
+            local base_name
+            base_name=$(basename "${src_file%.*}")
+            local dest_file="${src_dir}/${base_name}.jxl"
+
+            # File Exists Check
+            if [[ ! -f "$src_file" ]]; then
+                return 2
+            fi
+            if [[ -f "$dest_file" ]]; then
+                return 2
+            fi
+            # Permission Check
+            if [[ ! -w "$src_file" ]]; then
+                return 3
+            fi
+            if [[ ! -w "$src_dir" ]]; then
+                return 3
+            fi
+
+            local tmp_file
+            tmp_file=$(mktemp)
+            trap 'rm -f -- "$tmp_file"' EXIT INT TERM HUP
+
+            if ! cjxl -d 0 "$src_file" "$tmp_file" &> /dev/null; then
+                rm -f -- "$tmp_file"
+                trap - EXIT INT TERM HUP
+                # Conversion Failure
+                return 5
+            fi
+
+            if ! mv -- "$tmp_file" "$dest_file"; then
+                rm -f -- "$tmp_file"
+                trap - EXIT INT TERM HUP
+                # Move Failure
+                return 6
+            fi
+
+            if ! rm -- "$src_file"; then
+                trap - EXIT INT TERM HUP
+                # Source Deletion Failure
+                return 7
+            fi
+
+            trap - EXIT INT TERM HUP
+        done
+        return 0
+    }
+fi
