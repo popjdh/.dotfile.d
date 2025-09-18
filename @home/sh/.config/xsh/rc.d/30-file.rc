@@ -38,23 +38,23 @@ if (command -v cjxl &>/dev/null); then
 
             local tmp_file
             tmp_file=$(mktemp)
-            trap 'rm -f -- "$tmp_file"' EXIT INT TERM HUP
+            trap 'command rm -f -- "$tmp_file"' EXIT INT TERM HUP
 
             if ! cjxl -d 0 "$src_file" "$tmp_file" &> /dev/null; then
-                rm -f -- "$tmp_file"
+                command rm -f -- "$tmp_file"
                 trap - EXIT INT TERM HUP
                 # Conversion Failure
                 return 5
             fi
 
             if ! mv -- "$tmp_file" "$dest_file"; then
-                rm -f -- "$tmp_file"
+                command rm -f -- "$tmp_file"
                 trap - EXIT INT TERM HUP
                 # Move Failure
                 return 6
             fi
 
-            if ! rm -- "$src_file"; then
+            if ! command rm -- "$src_file"; then
                 trap - EXIT INT TERM HUP
                 # Source Deletion Failure
                 return 7
